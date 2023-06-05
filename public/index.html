@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Univer Server</title>
+</head>
+
+<body>
+    <h1>Univer Server</h1>
+    <h2>Websocket</h2>
+    <p>Open the console to see the messages</p>
+    <div id="messages"></div>
+    <h2> Send Message</h2>
+    <form action="">
+        <input type="text" id="message" name="message">
+        <input type="submit" value="Send">
+    </form>
+    <script>
+        var ws = new WebSocket("ws://localhost:8448/ws");
+
+        var arrayMessages = [];
+        //Triggered when the connection is opened
+        ws.onopen = function (evt) {
+            addMessage("Connection open ...");
+            ws.send("Hello WebSockets!");
+        };
+        //Triggered when a message is received
+        ws.onmessage = function (evt) {
+            console.log("Received Message: " + evt.data);
+            addMessage(evt.data);
+        };
+        //Triggered when the connection is closed
+        ws.onclose = function (evt) {
+            addMessage("Connection closed.");
+        };
+
+        function sendMessage() {
+            var message = document.getElementById("message").value;
+            ws.send(message);
+        }
+
+        function addMessage(message) {
+            arrayMessages.push(message);
+            messages = document.getElementById("messages");
+            messages.innerHTML = arrayMessages.join("<br>");
+            console.log(arrayMessages);
+        }
+
+        document.querySelector("form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            sendMessage();
+        });
+
+    </script>
+</body>
+
+</html>
